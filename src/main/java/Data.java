@@ -12,6 +12,7 @@ public class Data {
     private final int recovered;
     @Expose
     private final int active;
+    private double averageCumulativeNumberOfCasesFor2Weeks;
     private String month;
     private String year;
 
@@ -38,9 +39,13 @@ public class Data {
     public int getActive() {
         return active;
     }
-    public void setMonth(String month) { this.month = month; }
-    public void setYear(String year) { this.year = year; }
-
     public String getYear() { return year; }
     public String getMonth() { return month; }
+    public double getAverageCumulativeNumberOfCasesFor2Weeks() { return averageCumulativeNumberOfCasesFor2Weeks; }
+
+    public void setMonth(String month) { this.month = month; }
+    public void setYear(String year) { this.year = year; }
+    public void setAverageCumulativeNumberOfCasesFor2Weeks(double averageCumulativeNumberOfCasesFor2Weeks) {
+        this.averageCumulativeNumberOfCasesFor2Weeks = averageCumulativeNumberOfCasesFor2Weeks;
+    }
 }

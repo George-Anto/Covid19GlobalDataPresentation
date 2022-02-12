@@ -29,20 +29,23 @@ public class Country {
     public int getActive() { return data.getActive(); }
     public String getMonth() { return data.getMonth(); }
     public String getYear() { return data.getYear(); }
+    public double getAverageCumulativeNumberOfCasesFor2Weeks() { return data.getAverageCumulativeNumberOfCasesFor2Weeks(); }
 
     public void setTypeOfData(String typeOfData) { this.typeOfData = typeOfData; }
 
     public void printCountryData() {
         if (this.getTypeOfData().equals( "aggregated")) {
             System.out.println("Getting aggregated results for country: " + this.getCountryName() + "\n" +
-                    "Total covid cases confirmed: " + this.getConfirmed() + " \n" +
-                    "Total deaths due to the pandemic: " + this.getDeaths() + " \n");
+                    "Total covid cases confirmed: " + this.getConfirmed() + "\n" +
+                    "Total deaths due to the pandemic: " + this.getDeaths() + "\n");
         }
         else if(this.getTypeOfData().equals( "monthly")) {
             System.out.println("Getting monthly results for country: " + this.getCountryName() + "\n" +
                     "Month displayed: " + this.getMonth() + "/" + this.getYear() + "\n" +
-                    "Covid cases confirmed: " + this.getConfirmed() + " \n" +
-                    "Deaths this month due to the pandemic: " + this.getDeaths() + " \n");
+                    "Covid cases confirmed: " + this.getConfirmed() + "\n" +
+                    "Average cumulative number of confirmed cases per 100.000 citizens for the month: " +
+                    String.format("%.2f", this.getAverageCumulativeNumberOfCasesFor2Weeks()) + "\n" +
+                    "Deaths this month due to the pandemic: " + this.getDeaths() + "\n");
         }
         else System.out.println("Wrong type of data.");
     }

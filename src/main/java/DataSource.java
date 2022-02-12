@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DataSource {
 
@@ -100,10 +101,15 @@ public class DataSource {
 //        String year = aCountrysDataForAMonth.get(0)[3];
         int confirmed = 0, deaths = 0, recovered = 0, active = 0;
 
+        List<Double> totalCumulaticeNumber = new ArrayList<>();
+
         for(String[] aCountrysDataForADay: aCountrysDataForAMonth) {
             confirmed += Integer.parseInt(aCountrysDataForADay[4]);
             deaths += Integer.parseInt(aCountrysDataForADay[5]);
+            totalCumulaticeNumber.add(Double.parseDouble(aCountrysDataForADay[11]));
         }
+
+        double cumulaticeNumber = totalCumulaticeNumber.stream().collect(Collectors.averagingDouble(number-> number));
 
 //        for(String[] aCountrysDataForADay: aCountrysDataForAMonth) {
 //            for(String data: aCountrysDataForADay) {
@@ -113,6 +119,7 @@ public class DataSource {
 //        }
 
         Data data = new Data(location, confirmed, deaths, recovered, active);
+        data.setAverageCumulativeNumberOfCasesFor2Weeks(cumulaticeNumber);
         data.setMonth(month);
         data.setYear(year);
 
