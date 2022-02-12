@@ -16,7 +16,7 @@ public class Data {
     private String year;
 
     public Data(String location, int confirmed, int deaths, int recovered, int active) {
-        this.location = location;
+        this.location = location.substring(0, 1).toUpperCase() + location.substring(1).toLowerCase();
         this.confirmed = confirmed;
         this.deaths = deaths;
         this.recovered = recovered;

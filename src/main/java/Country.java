@@ -34,15 +34,15 @@ public class Country {
 
     public void printCountryData() {
         if (this.getTypeOfData().equals( "aggregated")) {
-            System.out.println("2) Country: " + this.getCountryName() + ", Deaths: " + this.getDeaths() +
-                    ", confirmed: " + this.getConfirmed() + ", current date: " + this.getQueryDate() +
-                    ", timestamp: " + this.getQueryTimestamp() + ", type of query: " + this.getTypeOfData());
+            System.out.println("Getting aggregated results for country: " + this.getCountryName() + "\n" +
+                    "Total covid cases confirmed: " + this.getConfirmed() + " \n" +
+                    "Total deaths due to the pandemic: " + this.getDeaths() + " \n");
         }
         else if(this.getTypeOfData().equals( "monthly")) {
-            System.out.println("2) Country: " + this.getCountryName() + ", Deaths: " + this.getDeaths() +
-                    ", confirmed: " + this.getConfirmed() + ", current date: " + this.getQueryDate() +
-                    ", timestamp: " + this.getQueryTimestamp() + ", type of query: " + this.getTypeOfData() +
-                    ", for the month: " + this.getMonth() + " of the year: " + this.getYear());
+            System.out.println("Getting monthly results for country: " + this.getCountryName() + "\n" +
+                    "Month displayed: " + this.getMonth() + "/" + this.getYear() + "\n" +
+                    "Covid cases confirmed: " + this.getConfirmed() + " \n" +
+                    "Deaths this month due to the pandemic: " + this.getDeaths() + " \n");
         }
         else System.out.println("Wrong type of data.");
     }
