@@ -45,12 +45,16 @@ public class DataSource {
                 .build()
                 .send(request, HttpResponse.BodyHandlers.ofString());
 
-        System.out.println("1) Status: " + response.statusCode() + ", " + response.body());
+//        System.out.println("1) Status: " + response.statusCode() + ", " + response.body());
 
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
         Country country =  gson.fromJson(response.body(), Country.class);
-        country.setTypeOfData("aggregated");
+        if (country.getCountryName() == null) {
+            country.setTypeOfData("No Data");
+        } else {
+            country.setTypeOfData("aggregated");
+        }
         return country;
     }
 
@@ -95,22 +99,21 @@ public class DataSource {
         if (theMonth.length() == 1) theMonth = "0" + theMonth;
         List<String[]> aCountrysDataForAMonth = this.getCountryDataForMonthFromCSV(aCountry, theMonth, year);
 
-//        String location = aCountrysDataForAMonth.get(0)[6];
-        String location = aCountry;
-//        String month = aCountrysDataForAMonth.get(0)[2];
-//        String year = aCountrysDataForAMonth.get(0)[3];
-        int confirmed = 0, deaths = 0, recovered = 0, active = 0;
-
-        List<Double> totalCumulaticeNumber = new ArrayList<>();
-
-        for(String[] aCountrysDataForADay: aCountrysDataForAMonth) {
-            confirmed += Integer.parseInt(aCountrysDataForADay[4]);
-            deaths += Integer.parseInt(aCountrysDataForADay[5]);
-            totalCumulaticeNumber.add(Double.parseDouble(aCountrysDataForADay[11]));
+        if (aCountrysDataForAMonth.size() == 0) {
+            Country noDataForCountry = new Country(null, "", 0);
+            noDataForCountry.setTypeOfData("No Data");
+            return noDataForCountry;
         }
 
-        double cumulaticeNumber = totalCumulaticeNumber.stream().collect(Collectors.averagingDouble(number-> number));
+        String location = aCountry;
+        int recovered = 0, active = 0;
 
+        List<Double> totalCumulativeNumber = new ArrayList<>();
+        List<Integer> confirmedList = new ArrayList<>();
+        List<Integer> deathsList = new ArrayList<>();
+
+        //Print the lines of the csv that are stored in the list<String[]> aCountrysDataForAMonth
+        //For debugging purposes
 //        for(String[] aCountrysDataForADay: aCountrysDataForAMonth) {
 //            for(String data: aCountrysDataForADay) {
 //                System.out.print(data + ", ");
@@ -118,8 +121,28 @@ public class DataSource {
 //            System.out.println();
 //        }
 
+        for(String[] aCountrysDataForADay: aCountrysDataForAMonth) {
+            confirmedList.add(Integer.parseInt(aCountrysDataForADay[4]));
+            deathsList.add(Integer.parseInt(aCountrysDataForADay[5]));
+            if (aCountrysDataForADay.length >= 12) {
+                totalCumulativeNumber.add(Double.parseDouble(aCountrysDataForADay[11]));
+            }
+        }
+
+        int confirmed = confirmedList
+                .stream()
+                .reduce(0, Integer::sum);
+
+        int deaths = deathsList
+                .stream()
+                .reduce(0, Integer::sum);
+
+        double cumulativeNumber = totalCumulativeNumber
+                .stream()
+                .collect(Collectors.averagingDouble(number-> number));
+
         Data data = new Data(location, confirmed, deaths, recovered, active);
-        data.setAverageCumulativeNumberOfCasesFor2Weeks(cumulaticeNumber);
+        data.setAverageCumulativeNumberOfCasesFor2Weeks(cumulativeNumber);
         data.setMonth(month);
         data.setYear(year);
 

@@ -47,6 +47,6 @@ public class Country {
                     String.format("%.2f", this.getAverageCumulativeNumberOfCasesFor2Weeks()) + "\n" +
                     "Deaths this month due to the pandemic: " + this.getDeaths() + "\n");
         }
-        else System.out.println("Wrong type of data.");
+        else System.out.println("We could not find any data for your input.\n");
     }
 }
