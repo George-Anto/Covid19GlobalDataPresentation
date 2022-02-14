@@ -36,6 +36,9 @@ public class Block {
     public String getPreviousHash() {
         return previousHash;
     }
+    public int getNonce() {
+        return nonce;
+    }
     public String calculateBlockHash(){
         String dataToHash = previousHash + String.valueOf(timeStamp)+
 //                String.valueOf(nonce) + data;

@@ -12,6 +12,7 @@ public class Miner extends Thread {
     private final List<Block> blockChain;
     private boolean isProgramClosed;
     private int totalBlocksToMine;
+    private Database database;
 
     private Miner() {
         prefix = 5;
@@ -21,6 +22,7 @@ public class Miner extends Thread {
         blockChain = new ArrayList<>();
         isProgramClosed = false;
         totalBlocksToMine = 0;
+        database = new Database();
     }
 
     private static final class MinerHolder {
@@ -48,7 +50,8 @@ public class Miner extends Thread {
             try {
                 semaphore.acquire();
                 if (totalBlocksToMine == 0 && isProgramClosed) break;
-                mine();
+//                mine();
+                database.InsertDB(mine());
                 totalBlocksToMine--;
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -64,7 +67,7 @@ public class Miner extends Thread {
 //        }
     }
 
-    public void mine() {
+    public Block mine() {
         String previousHush;
         if (isFirstBlock) {
             previousHush = "0";
@@ -72,10 +75,14 @@ public class Miner extends Thread {
         } else {
             previousHush = blockChain.get(blockChain.size()-1).getHash();
         }
-        Block block = new Block(previousHush, counrtiesToWriteInBlocks.get(0), new Date().getTime());
+
+        long timestamp = counrtiesToWriteInBlocks.get(0).getQueryTimestamp();
+        Block block = new Block(previousHush, counrtiesToWriteInBlocks.get(0), timestamp);
+
         block.mineBlock(prefix);
         blockChain.add(block);
         counrtiesToWriteInBlocks.remove(0);
         System.out.println("Node:" + (blockChain.size()-1) + " created");
+        return block;
     }
 }

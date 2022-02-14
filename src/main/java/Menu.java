@@ -40,7 +40,7 @@ public class Menu {
                 }
 
                 if (usersChoice.equals("3")) {
-                    System.out.println("This feature is not ready yet.\n");
+                    showStats();
                 }
 
                 if (usersChoice.equals("4") || usersChoice.equals("exit")) {
@@ -94,5 +94,9 @@ public class Menu {
         dataSource
                 .getCountryDataMonthly(aCountryInput, aMonth, aYear)
                 .printCountryData();
+    }
+
+    private void showStats() {
+        System.out.println("This feature is not ready yet.\n");
     }
 }
