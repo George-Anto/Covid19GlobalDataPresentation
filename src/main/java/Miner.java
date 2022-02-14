@@ -5,15 +5,17 @@ import java.util.concurrent.Semaphore;
 
 public class Miner extends Thread {
 
-    private static int prefix;
+    private final int prefix;
+    private boolean isFirstBlock;
     private final Semaphore semaphore;
-    private List<Country> counrtiesToWriteInBlocks;
-    private static List<Block> blockChain;
+    private final List<Country> counrtiesToWriteInBlocks;
+    private final List<Block> blockChain;
     private boolean isProgramClosed;
     private int totalBlocksToMine;
 
     private Miner() {
         prefix = 5;
+        isFirstBlock = true;
         semaphore = new Semaphore(0);
         counrtiesToWriteInBlocks = new ArrayList<>();
         blockChain = new ArrayList<>();
@@ -53,12 +55,27 @@ public class Miner extends Thread {
             }
         }
         System.out.println("Done creating all blocks!");
+        //For debugging purposes
+//        for (Country country: counrtiesToWriteInBlocks) {
+//            System.out.println(country.getCountryName() + " " + country.getConfirmed() + " " + country.getDeaths());
+//        }
+//        for (Block block: blockChain) {
+//            System.out.println(block.getCountryData().getCountryName() + " " + block.getCountryData().getConfirmed() + " " + block.getCountryData().getDeaths());
+//        }
     }
 
     public void mine() {
-        Block genesisBlock = new Block("0","Very important data",new Date().getTime());
-        genesisBlock.mineBlock(prefix);
-        blockChain.add(genesisBlock);
+        String previousHush;
+        if (isFirstBlock) {
+            previousHush = "0";
+            isFirstBlock = false;
+        } else {
+            previousHush = blockChain.get(blockChain.size()-1).getHash();
+        }
+        Block block = new Block(previousHush, counrtiesToWriteInBlocks.get(0), new Date().getTime());
+        block.mineBlock(prefix);
+        blockChain.add(block);
+        counrtiesToWriteInBlocks.remove(0);
         System.out.println("Node:" + (blockChain.size()-1) + " created");
     }
 }

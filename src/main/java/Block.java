@@ -5,16 +5,23 @@ import java.security.NoSuchAlgorithmException;
 public class Block {
     private String hash;
     private String previousHash;
-    private String data;
+    //private String data;
+    private Country countryData;
     private long timeStamp;
     private int nonce;
 
-    public Block(String previousHash, String data, long timeStamp) {
+    public Block(String previousHash, Country country, long timeStamp) {
         this.previousHash = previousHash;
-        this.data = data;
+        //this.data = data;
+        countryData = country;
         this.timeStamp = timeStamp;
         hash = calculateBlockHash();
     }
+
+    public Country getCountryData() {
+        return this.countryData;
+    }
+
     public String mineBlock(int prefix){
         String prefixString = new String(new char[prefix]).replace('\0','0');
         while (!hash.substring(0,prefix).equals(prefixString)){
@@ -31,7 +38,8 @@ public class Block {
     }
     public String calculateBlockHash(){
         String dataToHash = previousHash + String.valueOf(timeStamp)+
-                String.valueOf(nonce) + data;
+//                String.valueOf(nonce) + data;
+                String.valueOf(nonce) + countryData.toString();
         MessageDigest digest = null;
         byte[] bytes = null;
         try
