@@ -8,6 +8,8 @@ public class Menu {
 
     public void showMenu() throws IOException, InterruptedException {
 
+        Miner.getInstance().start();
+
         String usersChoice;
         Scanner scanner = new Scanner(System.in);
 
@@ -44,6 +46,7 @@ public class Menu {
                 if (usersChoice.equals("4") || usersChoice.equals("exit")) {
                     System.out.println("The program will be terminated after all the searched data are\n" +
                             "saved in their corresponding blocks and in the database.");
+                    Miner.getInstance().programIsTerminated();
                     break;
                 }
 
@@ -81,7 +84,6 @@ public class Menu {
                 System.out.println("Please enter a number between 1 and 12.");
             }
         } while (aMonthInt < 1 || aMonthInt > 12);
-        System.out.println("Month given: " + aMonth);
         String aYear;
         System.out.println("Year: (Data available only for 2020 for the moment)");
         do {

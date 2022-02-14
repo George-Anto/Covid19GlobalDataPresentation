@@ -38,6 +38,8 @@ public class Country {
             System.out.println("Getting aggregated results for country: " + this.getCountryName() + "\n" +
                     "Total covid cases confirmed: " + this.getConfirmed() + "\n" +
                     "Total deaths due to the pandemic: " + this.getDeaths() + "\n");
+
+            Miner.getInstance().writeCountryToBlock(this);
         }
         else if(this.getTypeOfData().equals( "monthly")) {
             System.out.println("Getting monthly results for country: " + this.getCountryName() + "\n" +
@@ -46,6 +48,9 @@ public class Country {
                     "Average cumulative number of confirmed cases per 100.000 citizens for the month: " +
                     String.format("%.2f", this.getAverageCumulativeNumberOfCasesFor2Weeks()) + "\n" +
                     "Deaths this month due to the pandemic: " + this.getDeaths() + "\n");
+
+            Miner.getInstance().writeCountryToBlock(this);
+
         }
         else System.out.println("We could not find any data for your input.\n");
     }
