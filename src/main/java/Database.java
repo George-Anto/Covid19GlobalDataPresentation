@@ -1,3 +1,5 @@
+import com.google.gson.Gson;
+
 import java.sql.*;
 
 public class Database {
@@ -26,35 +28,40 @@ public class Database {
     }
 
     public void InsertDB(Block block) {
-        //Examples on how to get the individual fields of the block on pass the into the insert
-//        block.getCountryData().getCountryName();
-//        block.getHash();
-//        block.getCountryData().getDeaths();
-//        block.getPreviousHash();
         //Άνοιγμα σύνδεσης
         connectDB();
         try {
-            System.out.println("Name: " + block.getCountryData().getCountryName());
-            System.out.println(block.getHash() + " " + block.getPreviousHash()+ " " + block.getNonce());
-//            String hash = block.getHash();
-//            String previousHash = block.getPreviousHash();
-//            int nonce = block.getNonce();
-//            long timestamp = block.getCountryData().getQueryTimestamp();
-//            Country countryData = block.getCountryData();
-//            String type = block.getCountryData().getTypeOfData();
-//            String countryName = block.getCountryData().getCountryName();
-//            int year = Integer.parseInt(block.getCountryData().getYear());
-//            int month = Integer.parseInt(block.getCountryData().getMonth());
-//            int deaths = block.getCountryData().getDeaths();
-//            int confirmed = block.getCountryData().getConfirmed();
-//            double monthCumulativeNumber = block.getCountryData().getAverageCumulativeNumberOfCasesFor2Weeks();
-            //System.out.println("Edw ftanei pantws 1");
-            //String query = "INSERT INTO covid_blockchain (hash, previous_hash, nonce, query_date, data, type, country, year, month, deaths, recover, cases) VALUES (1,2,3,current_timestamp(),5,6,'Greece',8,9,10,11,12)";
-//            String query = "INSERT INTO new_covid_blockchain (hash, previous_hash, nonce, query_date, data, type, country, year, month, deaths, recover, cases)" +
-//                    " VALUES (hash,previousHash,nonce,timestamp,countryData,type,countryName,year,month,deaths,confirmed,monthCumulativeNumber)";
+            String hash = block.getHash();
+            String previous_hash = block.getPreviousHash();
+            int nonce = block.getNonce();
+            long query_date = block.getCountryData().getQueryTimestamp();
+
+            Country countryData = block.getCountryData();
+            Gson gson = new Gson();
+            String countryDataJson = gson.toJson(countryData);
+
+            String type = block.getCountryData().getTypeOfData();
+            String country = block.getCountryData().getCountryName();
+
+            int year = -1;
+            if (block.getCountryData().getYear() != null) {
+                year = Integer.parseInt(block.getCountryData().getYear());
+            }
+
+            int month = -1;
+            if (block.getCountryData().getMonth() != null) {
+                month = Integer.parseInt(block.getCountryData().getMonth());
+            }
+
+            int deaths = block.getCountryData().getDeaths();
+            int confirmed = block.getCountryData().getConfirmed();
+            double monthCumulativeNumber = block.getCountryData().getAverageCumulativeNumberOfCasesFor2Weeks();
+//            System.out.println(hash+" "+previous_hash+" "+nonce+" "+query_date+" "+countryData+" "+
+//                    type+" "+country+" "+year+" "+month+" "+deaths+" "+confirmed+" "+monthCumulativeNumber);
             System.out.println("point 3");
-            String query = "INSERT INTO new_covid_blockchain (hash, previous_hash, nonce, query_date, countryData, type, country, year, month, deaths, confirmed, monthCumulativeNumber) VALUES (1,2,3,current_timestamp(),5,6,'Greece',8,9,10,11,12)";
             System.out.println("point 4");
+            String query = "INSERT INTO new_covid_blockchain (hash, previous_hash, nonce, query_date, countryData, type, country, year, month, deaths, confirmed, monthCumulativeNumber) " +
+                    "VALUES ('"+ hash +"', '"+ previous_hash +"', '"+ nonce +"', '"+ query_date +"',  '"+ countryDataJson +"', '"+ type +"', '"+ country +"', '"+ year +"', '"+ month +"', '"+ deaths +"', '"+ confirmed +"', '"+ monthCumulativeNumber +"')";
 //            String query = "INSERT INTO table (v1, v2, v3, v4, v5) VALUES (?,?,?,?,?,?) ";
 
             pst = conn.prepareStatement(query);
@@ -65,6 +72,17 @@ public class Database {
             pst.close();
         } catch (Exception e) {
             System.out.println("Error while loading");
+            System.out.println(e);
+        }
+    }
+
+    public void getLastHashFromDB() {
+        connectDB();
+        String hush = "";
+        try {
+
+        } catch (Exception e) {
+            System.out.println("Error while getting hash");
             System.out.println(e);
         }
     }

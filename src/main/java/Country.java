@@ -54,4 +54,9 @@ public class Country {
         }
         else System.out.println("We could not find any data for your input.\n");
     }
+
+    @Override
+    public String toString() {
+        return this.data.toString();
+    }
 }

@@ -48,4 +48,18 @@ public class Data {
     public void setAverageCumulativeNumberOfCasesFor2Weeks(double averageCumulativeNumberOfCasesFor2Weeks) {
         this.averageCumulativeNumberOfCasesFor2Weeks = averageCumulativeNumberOfCasesFor2Weeks;
     }
+
+    @Override
+    public String toString() {
+        return "Data{" +
+                "location='" + location + '\'' +
+                ", confirmed=" + confirmed +
+                ", deaths=" + deaths +
+                ", recovered=" + recovered +
+                ", active=" + active +
+                ", averageCumulativeNumberOfCasesFor2Weeks=" + averageCumulativeNumberOfCasesFor2Weeks +
+                ", month='" + month + '\'' +
+                ", year='" + year + '\'' +
+                '}';
+    }
 }

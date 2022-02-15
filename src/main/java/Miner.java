@@ -12,7 +12,7 @@ public class Miner extends Thread {
     private final List<Block> blockChain;
     private boolean isProgramClosed;
     private int totalBlocksToMine;
-    private Database database;
+    private final Database database;
 
     private Miner() {
         prefix = 5;
