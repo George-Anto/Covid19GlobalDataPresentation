@@ -76,14 +76,24 @@ public class Database {
         }
     }
 
-    public void getLastHashFromDB() {
+    public String getLastHashFromDB() {
         connectDB();
-        String hush = "";
+        String hash = "0";
         try {
-
+            String query = "SELECT hash FROM new_covid_blockchain ORDER BY id DESC LIMIT 1;";
+            pst = conn.prepareStatement(query);
+            rs = pst.executeQuery(query);
+            while (rs.next()) {
+                hash = rs.getString("hash");
+            }
+            pst.close();
+            if (hash == null) {
+                hash = "0";
+            }
         } catch (Exception e) {
             System.out.println("Error while getting hash");
             System.out.println(e);
         }
+        return hash;
     }
 }

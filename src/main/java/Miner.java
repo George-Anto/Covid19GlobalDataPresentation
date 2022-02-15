@@ -1,12 +1,10 @@
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
 public class Miner extends Thread {
 
     private final int prefix;
-    private boolean isFirstBlock;
     private final Semaphore semaphore;
     private final List<Country> counrtiesToWriteInBlocks;
     private final List<Block> blockChain;
@@ -16,7 +14,6 @@ public class Miner extends Thread {
 
     private Miner() {
         prefix = 5;
-        isFirstBlock = true;
         semaphore = new Semaphore(0);
         counrtiesToWriteInBlocks = new ArrayList<>();
         blockChain = new ArrayList<>();
@@ -68,17 +65,13 @@ public class Miner extends Thread {
     }
 
     public Block mine() {
-        String previousHush;
-        if (isFirstBlock) {
-            previousHush = "0";
-            isFirstBlock = false;
-        } else {
-            previousHush = blockChain.get(blockChain.size()-1).getHash();
-        }
-
         long timestamp = counrtiesToWriteInBlocks.get(0).getQueryTimestamp();
-        Block block = new Block(previousHush, counrtiesToWriteInBlocks.get(0), timestamp);
-
+        Block block;
+        try {
+            block = new Block(database.getLastHashFromDB(), counrtiesToWriteInBlocks.get(0), timestamp);
+        } catch (Exception e) {
+            block = new Block("0", counrtiesToWriteInBlocks.get(0), timestamp);
+        }
         block.mineBlock(prefix);
         blockChain.add(block);
         counrtiesToWriteInBlocks.remove(0);
