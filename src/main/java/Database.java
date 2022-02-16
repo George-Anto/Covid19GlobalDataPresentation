@@ -1,6 +1,7 @@
 import com.google.gson.Gson;
 
 import java.sql.*;
+import java.util.Scanner;
 
 public class Database {
 
@@ -95,5 +96,244 @@ public class Database {
             System.out.println(e);
         }
         return hash;
+    }
+
+    public void aggregateStatsPerCountry() {
+        String usersChoice;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Write a country: ");
+        usersChoice = scanner.nextLine();
+
+        connectDB();
+
+        try {
+            String query = "SELECT * FROM new_covid_blockchain WHERE (country = '"+usersChoice+"' AND type = 'aggregated') LIMIT 1";
+            pst = conn.prepareStatement(query);
+            rs = pst.executeQuery(query);
+            System.out.println();
+            System.out.println("--------------------------- " + usersChoice + " total stats  ---------------------------");
+//            if (!rs.next()) {System.out.println("No DATA found");}
+            boolean dataFound = false;
+            while (rs.next()) {
+                dataFound = true;
+                String country = rs.getString("country");
+                int deaths = rs.getInt("deaths");
+                int confirmed = rs.getInt("confirmed");
+                System.out.println("For the country: " + country + "\tThe casualties are: " + deaths + " \tIn total: " + confirmed);
+            }
+            if (!dataFound) System.out.println("No DATA found");
+            System.out.println("-----------------------------------------------------------------------------\n");
+            pst.close();
+        } catch (Exception e) {
+            System.out.println("Error while loading data for the " + usersChoice + "...");
+            System.out.println(e);
+        }
+    }
+
+    public void everyCountryStatsPerOneMonth() {
+        int usersChoice;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Give a month: ");
+        usersChoice = scanner.nextInt();
+
+        connectDB();
+
+        try {
+            String query = "SELECT DISTINCT country,month,deaths,confirmed FROM new_covid_blockchain WHERE (month = '"+usersChoice+"' AND type = 'monthly') ORDER BY deaths DESC";
+            pst = conn.prepareStatement(query);
+            rs = pst.executeQuery(query);
+            System.out.println();
+            System.out.println("--------------------------- " + usersChoice + " month total stats  ---------------------------");
+            boolean dataFound = false;
+            while (rs.next()) {
+                dataFound = true;
+                int month = rs.getInt("month");
+                String country = rs.getString("country");
+                int deaths = rs.getInt("deaths");
+                int confirmed = rs.getInt("confirmed");
+                System.out.println("For the country: " + country + "\tThe casualties are: " + deaths + " \tIn total: " + confirmed);
+            }
+            if (!dataFound) System.out.println("No DATA found");
+            System.out.println("-----------------------------------------------------------------------------\n");
+            pst.close();
+        } catch (Exception e) {
+            System.out.println("Error while loading data for the " + usersChoice + " month...");
+            System.out.println(e);
+        }
+    }
+
+    public void oneCountryStatsPerEveryMonth() {
+        String usersChoice;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Write a country: ");
+        usersChoice = scanner.nextLine();
+
+        connectDB();
+
+        try {
+            String query = "SELECT DISTINCT country,month,deaths,confirmed FROM new_covid_blockchain WHERE (country = '"+usersChoice+"' AND type = 'monthly') ORDER BY month DESC";
+            pst = conn.prepareStatement(query);
+            rs = pst.executeQuery(query);
+            System.out.println();
+            System.out.println("--------------------------- " + usersChoice + " per month stats  ---------------------------");
+            boolean dataFound = false;
+            while (rs.next()) {
+                dataFound = true;
+                int month = rs.getInt("month");
+                String country = rs.getString("country");
+                int deaths = rs.getInt("deaths");
+                int confirmed = rs.getInt("confirmed");
+                System.out.println("For the month: " + month + "\tFor the country: " + country + "\tThe casualties are: " + deaths + " \tIn total: " + confirmed);
+            }
+            if (!dataFound) System.out.println("No DATA found");
+            System.out.println("-----------------------------------------------------------------------------\n");
+            pst.close();
+        } catch (Exception e) {
+            System.out.println("Error while loading data for the " + usersChoice + " country...");
+            System.out.println(e);
+        }
+    }
+
+    public void oneMonthMaxDeaths() {
+        int usersChoice;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Give a month: ");
+        usersChoice = scanner.nextInt();
+
+        connectDB();
+
+        try {
+            String query = "SELECT * FROM new_covid_blockchain WHERE (month = '"+usersChoice+"' AND type = 'monthly') ORDER BY deaths DESC LIMIT 1";
+            pst = conn.prepareStatement(query);
+            rs = pst.executeQuery(query);
+            System.out.println();
+            System.out.println("------------------------ " + usersChoice + " months country max deaths ------------------------");
+            boolean dataFound = false;
+            while (rs.next()) {
+                dataFound = true;
+                String country = rs.getString("country");
+                int deaths = rs.getInt("deaths");
+                int confirmed = rs.getInt("confirmed");
+                System.out.println("For the country: " + country + "\tThe casualties are: " + deaths + " \tIn total: " + confirmed);
+            }
+            if (!dataFound) System.out.println("No DATA found");
+            System.out.println("----------------------------------------------------------------------------------");
+            pst.close();
+        } catch (Exception e) {
+            System.out.println("Error while loading data for the " + usersChoice + " month...");
+            System.out.println(e);
+        }
+    }
+
+    public void oneCountryMaxDeathsInAMonth() {
+        String usersChoice;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Write a country: ");
+        usersChoice = scanner.nextLine();
+
+        connectDB();
+
+        try {
+            String query = "SELECT * FROM new_covid_blockchain WHERE (country = '"+usersChoice+"' AND type = 'monthly') ORDER BY deaths DESC LIMIT 1";
+            pst = conn.prepareStatement(query);
+            rs = pst.executeQuery(query);
+            System.out.println();
+            System.out.println("--------------------------- " + usersChoice + " has max casualties ---------------------------");
+            boolean dataFound = false;
+            while (rs.next()) {
+                dataFound = true;
+                int month = rs.getInt("month");
+                String country = rs.getString("country");
+                int deaths = rs.getInt("deaths");
+                int confirmed = rs.getInt("confirmed");
+                System.out.println("For the month: " + month + "\tFor the country: " + country + "\tThe casualties are: " + deaths);
+            }
+            if (!dataFound) System.out.println("No DATA found");
+            System.out.println("------------------------------------------------------------------------------------\n");
+            pst.close();
+        } catch (Exception e) {
+            System.out.println("Error while loading data for the " + usersChoice + " country...");
+            System.out.println(e);
+        }
+    }
+
+    public void topTenAggregated() {
+        connectDB();
+
+        try {
+            String query = "SELECT DISTINCT country,month,deaths,confirmed FROM new_covid_blockchain WHERE (type = 'aggregated') ORDER BY deaths DESC LIMIT 10";
+            pst = conn.prepareStatement(query);
+            rs = pst.executeQuery(query);
+            System.out.println();
+            System.out.println("----------------------- top 10 aggregated casualties ---------------------");
+            boolean dataFound = false;
+            while (rs.next()) {
+                dataFound = true;
+                int month = rs.getInt("month");
+                String country = rs.getString("country");
+                int deaths = rs.getInt("deaths");
+                int confirmed = rs.getInt("confirmed");
+                System.out.println("\tFor the country: " + country + "\tThe casualties are: " + deaths);
+            }
+            if (!dataFound) System.out.println("No DATA found");
+            System.out.println("-------------------------------------------------------------------------\n");
+            pst.close();
+        } catch (Exception e) {
+            System.out.println("Error while loading data...");
+            System.out.println(e);
+        }
+    }
+
+    public void topTenMonthDeaths() {
+        connectDB();
+
+        try {
+            String query = "SELECT DISTINCT country,month,deaths,confirmed FROM new_covid_blockchain WHERE (type = 'monthly') ORDER BY deaths DESC LIMIT 10";
+            pst = conn.prepareStatement(query);
+            rs = pst.executeQuery(query);
+            System.out.println();
+            System.out.println("----------------------- top 10 month casualties ---------------------");
+            boolean dataFound = false;
+            while (rs.next()) {
+                dataFound = true;
+                int month = rs.getInt("month");
+                String country = rs.getString("country");
+                int deaths = rs.getInt("deaths");
+                int confirmed = rs.getInt("confirmed");
+                System.out.println("\tFor the month: " + month + "\tFor the country: " + country + "\tThe casualties are: " + deaths);
+            }
+            if (!dataFound) System.out.println("No DATA found");
+            System.out.println("-------------------------------------------------------------------------\n");
+            pst.close();
+        } catch (Exception e) {
+            System.out.println("Error while loading data...");
+            System.out.println(e);
+        }
+    }
+
+    public void topTenMonthConfirmedCases() {
+        connectDB();
+
+        try {
+            String query = "SELECT DISTINCT country,month,confirmed FROM new_covid_blockchain WHERE (type = 'monthly') ORDER BY confirmed DESC LIMIT 10";
+            pst = conn.prepareStatement(query);
+            rs = pst.executeQuery(query);
+            System.out.println();
+            System.out.println("----------------------- top 10 month confirmed cases ---------------------");
+            boolean dataFound = false;
+            while (rs.next()) {
+                dataFound = true;
+                int month = rs.getInt("month");
+                String country = rs.getString("country");
+                int confirmed = rs.getInt("confirmed");
+                System.out.println("\tFor the month: " + month + "\tFor the country: " + country + "\tThe confirmed cases are: " + confirmed);
+            }
+            if (!dataFound) System.out.println("No DATA found");
+            System.out.println("-------------------------------------------------------------------------\n");
+            pst.close();
+        } catch (Exception e) {
+            System.out.println("Error while loading data...");
+            System.out.println(e);
+        }
     }
 }

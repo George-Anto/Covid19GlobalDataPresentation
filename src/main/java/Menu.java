@@ -97,6 +97,79 @@ public class Menu {
     }
 
     private void showStats() {
-        System.out.println("This feature is not ready yet.\n");
+        System.out.println("Your choice: ");
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\n------------ Specific Statistics per month / country -----------------");
+            System.out.println("Press 31 to print the aggregated stats for a specific country.");
+            System.out.println("Press 32 to print the countries metrics for a specific month.");
+            System.out.println("Press 33 to print the monthly metrics for a specific country.");
+            System.out.println("Press 34 to print the month with the max deaths.");
+            System.out.println("Press 35 to print every month deaths of a specific country.");
+
+            System.out.println("\n----------- Top 10 Statistics aggregated / months / countries --------");
+            System.out.println("Press 36 to print the top ten aggregated searches.");
+            System.out.println("Press 37 to print the top ten monthly deaths.");
+            System.out.println("Press 38 to print the top ten monthly confirmed cases.");
+
+            System.out.println("\n--------------- Back to Main Menu ----------------");
+            System.out.println("Press 0 or write 'back' to go back to the Main Menu");
+
+            System.out.println("Your choice: ");
+            String usersChoice = scanner.nextLine();
+
+            while (!usersChoice.equals("31") && !usersChoice.equals("32") && !usersChoice.equals("33") &&
+                    !usersChoice.equals("34") && !usersChoice.equals("35") && !usersChoice.equals("36") &&
+                    !usersChoice.equals("37") && !usersChoice.equals("38") && !usersChoice.equals("0") &&
+                    !usersChoice.equals("back")) {
+                System.out.println("Please enter a valid choice: ");
+                usersChoice = new Scanner(System.in).nextLine();
+            }
+
+            if (usersChoice.equals("31")) {
+                Database st1 = new Database();
+                st1.aggregateStatsPerCountry();
+            }
+
+            if (usersChoice.equals("32")) {
+                Database st1 = new Database();
+                st1.everyCountryStatsPerOneMonth();
+            }
+
+            if (usersChoice.equals("33")) {
+                Database st1 = new Database();
+                st1.oneCountryStatsPerEveryMonth();
+            }
+
+            if (usersChoice.equals("34")) {
+                Database st1 = new Database();
+                st1.oneMonthMaxDeaths();
+            }
+
+            if (usersChoice.equals("35")) {
+                Database st1 = new Database();
+                st1.oneCountryMaxDeathsInAMonth();
+            }
+
+            if (usersChoice.equals("36")) {
+                Database st1 = new Database();
+                st1.topTenAggregated();
+            }
+
+            if (usersChoice.equals("37")) {
+                Database st1 = new Database();
+                st1.topTenMonthDeaths();
+            }
+
+            if (usersChoice.equals("38")) {
+                Database st1 = new Database();
+                st1.topTenMonthConfirmedCases();
+            }
+
+            if (usersChoice.equals("0") || usersChoice.equals("back")) {
+                break;
+            }
+        }
     }
 }
