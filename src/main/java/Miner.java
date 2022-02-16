@@ -54,7 +54,7 @@ public class Miner extends Thread {
                 e.printStackTrace();
             }
         }
-        System.out.println("Done creating all blocks!");
+        System.out.println("\nProgram is terminated!");
         //For debugging purposes
 //        for (Country country: counrtiesToWriteInBlocks) {
 //            System.out.println(country.getCountryName() + " " + country.getConfirmed() + " " + country.getDeaths());
