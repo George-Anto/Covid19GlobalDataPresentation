@@ -6,7 +6,7 @@ public class Miner extends Thread {
 
     private final int prefix;
     private final Semaphore semaphore;
-    private final List<Country> counrtiesToWriteInBlocks;
+    private final List<Country> countriesToWriteInBlocks;
     private final List<Block> blockChain;
     private boolean isProgramClosed;
     private int totalBlocksToMine;
@@ -15,7 +15,7 @@ public class Miner extends Thread {
     private Miner() {
         prefix = 5;
         semaphore = new Semaphore(0);
-        counrtiesToWriteInBlocks = new ArrayList<>();
+        countriesToWriteInBlocks = new ArrayList<>();
         blockChain = new ArrayList<>();
         isProgramClosed = false;
         totalBlocksToMine = 0;
@@ -31,7 +31,7 @@ public class Miner extends Thread {
     }
 
     public void writeCountryToBlock(Country aCountry) {
-        counrtiesToWriteInBlocks.add(aCountry);
+        countriesToWriteInBlocks.add(aCountry);
         this.semaphore.release();
         this.totalBlocksToMine++;
     }
@@ -56,7 +56,7 @@ public class Miner extends Thread {
         }
         System.out.println("\nProgram is terminated!");
         //For debugging purposes
-//        for (Country country: counrtiesToWriteInBlocks) {
+//        for (Country country: countriesToWriteInBlocks) {
 //            System.out.println(country.getCountryName() + " " + country.getConfirmed() + " " + country.getDeaths());
 //        }
 //        for (Block block: blockChain) {
@@ -65,16 +65,16 @@ public class Miner extends Thread {
     }
 
     public Block mine() {
-        long timestamp = counrtiesToWriteInBlocks.get(0).getQueryTimestamp();
+        long timestamp = countriesToWriteInBlocks.get(0).getQueryTimestamp();
         Block block;
         try {
-            block = new Block(database.getLastHashFromDB(), counrtiesToWriteInBlocks.get(0), timestamp);
+            block = new Block(database.getLastHashFromDB(), countriesToWriteInBlocks.get(0), timestamp);
         } catch (Exception e) {
-            block = new Block("0", counrtiesToWriteInBlocks.get(0), timestamp);
+            block = new Block("0", countriesToWriteInBlocks.get(0), timestamp);
         }
         block.mineBlock(prefix);
         blockChain.add(block);
-        counrtiesToWriteInBlocks.remove(0);
+        countriesToWriteInBlocks.remove(0);
         System.out.println("Node:" + (blockChain.size()-1) + " created");
         return block;
     }
