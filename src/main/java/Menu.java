@@ -2,12 +2,16 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Scanner;
 
+//the primary menu class that is printing the possible choices to the user,
+//is checking the given value and is calling the appropriate method
 public class Menu {
 
     private final DataSource dataSource = DataSource.getInstance();
 
     public void showMenu() throws IOException, InterruptedException {
 
+        //The single instance of the Miner class starts running as soon as the show menu method is called,
+        //that is when the program starts, so the thread starts right after the main
         Miner.getInstance().start();
 
         String usersChoice;
@@ -58,19 +62,27 @@ public class Menu {
         }
     }
 
+    //method that is taking a country given by the user, is going to be inserted as aggregated block in
+    //the blockchain and also is printing the results in the console
     private void printAggregatedCountryResults() throws URISyntaxException, IOException, InterruptedException {
         System.out.println("Country: ");
         String aCountryInput = new Scanner(System.in).nextLine();
-
+        //We call the getCountryDataAggregated() method which is responsible for creating the country object
+        //and then the printCountryData() method which displays its data
+        //These methods are chained because the first returns a country object and the second
+        //is called upon a country object
         dataSource
                 .getCountryDataAggregated(aCountryInput)
                 .printCountryData();
     }
 
+    //method that is taking a country, a month, a year (2020) given by the user, is going to be inserted
+    //as monthly block in the blockchain and also is printing the results in the console
     private void printMonthlyCountryResults() throws IOException {
         System.out.println("Give the country and the month of the year you wish to see results for...");
         System.out.println("Country: ");
         String aCountryInput = new Scanner(System.in).nextLine();
+        //We make sure that the user will enter valid data, this means a number between 1 and 12
         String aMonth;
         int aMonthInt = -1;
         do {
@@ -92,12 +104,15 @@ public class Menu {
             aYear = new Scanner(System.in).nextLine();
             if (!aYear.equals("2020")) System.out.println("Data available only for 2020 for the moment.\nYear: ");
         }while (!aYear.equals("2020"));
-
+        //We do what we also did above for the aggregated results but here for the monthly results
         dataSource
                 .getCountryDataMonthly(aCountryInput, aMonth, aYear)
                 .printCountryData();
     }
 
+    //method that creates the submenu for the statistics that is printing the possible choices to the user,
+    //is checking the given value and is calling the appropriate method
+    //mainly calling database methods for printing the statistic results
     private void showStats() {
         Database database = new Database();
 

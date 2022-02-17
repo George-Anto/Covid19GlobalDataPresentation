@@ -4,30 +4,35 @@ import java.sql.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+//The main class for the connection with the database. As database, we use mySQL in MariaDB engine.
+// We use JDBC API for connecting, issuing queries and handling results.
+//For every action with database, we create the connection giving the following credentials, and we open the
+//connection, we use the PrepareStatement objects to issue our statements
 public class Database {
 
+    //They are following credentials for the connection and initialization of the connection - statement - results.
     static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
     static final String DB_URL = "jdbc:mysql://localhost:3306/covid_cases_db";
     static final String USER = "root";
     static final String PASS = "";
     private Connection conn = null;
-    private Statement stmt = null;
     private PreparedStatement pst = null;
     private ResultSet rs = null;
 
+    //The method that we use to create a connection with the database
     public void connectDB() {
         try {
             Class.forName(JDBC_DRIVER);
-            System.out.println("Connecting to database...");
+//            System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            System.out.println("Connected Successfully...");
+//            System.out.println("Connected Successfully...");
         } catch (Exception e) {
             System.out.println("Error while Connecting . . . ");
         }
     }
 
+    //the main method for the inserting all the block values in the current block position of the chain
     public void InsertDB(Block block) {
-        //Άνοιγμα σύνδεσης
         connectDB();
         try {
             String hash = block.getHash();
@@ -42,6 +47,9 @@ public class Database {
             String type = block.getCountryData().getTypeOfData();
             String country = block.getCountryData().getCountryName();
 
+            //If the countryData object that is inside the block is of type aggregated, then
+            //there will be no month and year data to parseInt from, so we mark them with the value -1
+            //and store them with that value in the database
             int year = -1;
             if (block.getCountryData().getYear() != null) {
                 year = Integer.parseInt(block.getCountryData().getYear());
@@ -58,19 +66,17 @@ public class Database {
 
             String query = "INSERT INTO new_covid_blockchain (hash, previous_hash, nonce, query_date, countryData, type, country, year, month, deaths, confirmed, monthCumulativeNumber) " +
                     "VALUES ('"+ hash +"', '"+ previous_hash +"', '"+ nonce +"', '"+ query_date +"',  '"+ countryDataJson +"', '"+ type +"', '"+ country +"', '"+ year +"', '"+ month +"', '"+ deaths +"', '"+ confirmed +"', '"+ monthCumulativeNumber +"')";
-//            String query = "INSERT INTO table (v1, v2, v3, v4, v5) VALUES (?,?,?,?,?,?) ";
 
             pst = conn.prepareStatement(query);
-            System.out.println("point 5");
-            //pst.setInt(1,x);
             pst.executeUpdate();
-            System.out.println("Successfully inserted...");
+            //System.out.println("Successfully inserted...");
             pst.close();
         } catch (Exception e) {
             System.out.println("Error while loading");
         }
     }
 
+    //the method that is getting the last hash key from the latest inserted block in the chain
     public String getLastHashFromDB() {
         connectDB();
         String hash = "0";
@@ -82,6 +88,8 @@ public class Database {
                 hash = rs.getString("hash");
             }
             pst.close();
+            //If there is no block saved in the database, it means that the current block is the first one
+            //in the chain so, the field that refers to the previous hash will be zero as in the provided code
             if (hash == null) {
                 hash = "0";
             }
@@ -91,6 +99,7 @@ public class Database {
         return hash;
     }
 
+    //method that is printing the total / aggregated results for a country
     public void aggregateStatsPerCountry() {
         System.out.println("Write a country: ");
         String usersChoice = new Scanner(System.in).nextLine();
@@ -118,6 +127,8 @@ public class Database {
         }
     }
 
+    //method that is printing the unique values for a specific
+    //month from every country in the blockchain descending ordered by deaths
     public void everyCountryStatsPerOneMonth() {
         int usersChoice = getMonthInput();
 
@@ -144,6 +155,8 @@ public class Database {
         }
     }
 
+    //method that is printing for a unique country every register month in the blockchain
+    //descending ordered by months
     public void oneCountryStatsPerEveryMonth() {
         System.out.println("Write a country: ");
         String usersChoice = new Scanner(System.in).nextLine();
@@ -172,6 +185,7 @@ public class Database {
         }
     }
 
+    //method that is printing for a month the country with the max deaths
     public void oneMonthMaxDeaths() {
         int usersChoice = getMonthInput();
 
@@ -198,6 +212,7 @@ public class Database {
         }
     }
 
+    //method that is printing for one country the month with the max deaths
     public void oneCountryMaxDeathsInAMonth() {
         System.out.println("Write a country: ");
         String usersChoice = new Scanner(System.in).nextLine();
@@ -225,6 +240,7 @@ public class Database {
         }
     }
 
+    //method that is printing the unique top ten aggregated stats for a country ordered descending by deaths
     public void topTenAggregated() {
         connectDB();
         try {
@@ -248,6 +264,7 @@ public class Database {
         }
     }
 
+    //method that is printing the unique top ten aggregated stats for a country ordered descending by deaths
     public void topTenMonthDeaths() {
         connectDB();
         try {
@@ -272,6 +289,7 @@ public class Database {
         }
     }
 
+    //method that is printing the unique top ten aggregated stats for a country ordered descending by confirmed cases
     public void topTenMonthConfirmedCases() {
         connectDB();
         try {
@@ -296,6 +314,8 @@ public class Database {
         }
     }
 
+    //method that is used from the previous methods to confirm that the user is giving valid month input
+    //this means that the input is a number between 1 nad 12
     private int getMonthInput() {
         int usersChoice = -1;
         do {
